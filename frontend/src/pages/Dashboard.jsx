@@ -152,13 +152,13 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 font-poppins">
-      <div className="flex-1 w-full">
-        <div className="max-w-[1920px] mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 xl:px-10 py-4 xs:py-5 sm:py-6 lg:py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 font-poppins">
+      <div className="w-full">
+        <div className="max-w-[1920px] mx-auto px-3 xs:px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 py-4 xs:py-5 sm:py-6 lg:py-8">
           
           {/* Modern Header */}
           <motion.header 
-            className="relative bg-gradient-to-r from-purple-900 to-purple-900 rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-6 lg:p-8 mb-6 sm:mb-8 overflow-hidden shadow-2xl"
+            className="relative bg-gradient-to-r from-purple-900 to-purple-900 rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 xs:p-5 sm:p-6 lg:p-8 mb-5 xs:mb-6 sm:mb-7 lg:mb-8 overflow-hidden shadow-2xl"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -169,7 +169,7 @@ const Dashboard = () => {
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-400 rounded-full  translate-y-1/2 -translate-x-1/2" />
             </div>
 
-            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-5 lg:gap-6">
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-5">
               {/* Left: Logo and Title */}
               <div className="flex items-center gap-3 xs:gap-4 sm:gap-5">
                 <motion.div
@@ -184,10 +184,10 @@ const Dashboard = () => {
                     className="w-16 h-16 xs:w-18 xs:h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full border-3 sm:border-4 border-white shadow-2xl relative z-10 object-cover"
                   />
                 </motion.div>
-                <div className="text-white">
-                  <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold mb-0.5 sm:mb-1 drop-shadow-lg leading-tight">Periyar University</h1>
-                  <p className="text-yellow-200 font-semibold text-xs xs:text-sm sm:text-base drop-shadow-md leading-tight">Centre for Distance & Online Education</p>
-                  <p className="text-indigo-100 text-[10px] xs:text-xs sm:text-sm mt-0.5 sm:mt-1">Admin Dashboard</p>
+                <div className="text-white min-w-0 flex-1">
+                  <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 drop-shadow-lg leading-tight truncate">Periyar University</h1>
+                  <p className="text-yellow-200 font-semibold text-xs xs:text-sm sm:text-base drop-shadow-md leading-tight truncate">Centre for Distance & Online Education</p>
+                  <p className="text-indigo-100 text-[10px] xs:text-xs sm:text-sm mt-1 truncate">Admin Dashboard</p>
                 </div>
               </div>
 
@@ -211,25 +211,25 @@ const Dashboard = () => {
 
           {/* Welcome Section */}
           <motion.div
-            className="mb-6 xs:mb-7 sm:mb-8"
+            className="mb-5 xs:mb-6 sm:mb-7 lg:mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="text-2xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-1.5 sm:mb-2 leading-tight">
+            <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 leading-tight">
               Welcome Back, <span className="bg-gradient-to-r from-purple-600 to-purple-900 bg-clip-text text-transparent">Admin!</span>
             </h2>
             <p className="text-gray-600 text-sm xs:text-base sm:text-lg">Here's what's happening with your platform today.</p>
           </motion.div>
 
           {/* Stats Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-4 xs:gap-4 sm:gap-5 lg:gap-6 mb-8 sm:mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 mb-6 xs:mb-7 sm:mb-8 lg:mb-10">
             {cardData.map((card, index) => {
               const EffectComponent = card.effect;
               return (
                 <motion.div
                   key={index}
-                  className="group relative bg-white rounded-xl sm:rounded-2xl p-4 xs:p-4.5 sm:p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 overflow-hidden cursor-pointer"
+                  className="group relative bg-white rounded-xl sm:rounded-2xl p-4 xs:p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 overflow-hidden cursor-pointer"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -312,25 +312,25 @@ const Dashboard = () => {
           </div>
 
           {/* Analytics Section Header */}
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-6 xs:mb-7 sm:mb-8">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h3 className="text-xl xs:text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 xs:gap-2.5 sm:gap-3 mb-1.5 sm:mb-2">
-                <span className="w-1 xs:w-1.5 h-7 xs:h-8 sm:h-10 bg-gradient-to-b from-indigo-600 via-purple-600 to-pink-600 rounded-full shadow-lg" />
+              <h3 className="text-xl xs:text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 xs:gap-3 mb-2">
+                <span className="w-1 xs:w-1.5 h-8 xs:h-9 sm:h-10 bg-gradient-to-b from-indigo-600 via-purple-600 to-pink-600 rounded-full shadow-lg" />
                 Analytics & Insights
               </h3>
-              <p className="text-gray-600 text-xs xs:text-sm sm:text-base mt-1 ml-4 xs:ml-5 sm:ml-6">Comprehensive data visualization and performance metrics</p>
+              <p className="text-gray-600 text-sm xs:text-base mt-1 ml-5 xs:ml-6">Comprehensive data visualization and performance metrics</p>
             </motion.div>
           </div>
 
           {/* Charts Section - 2 Row Grid with 3 Charts Each */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 mb-8 sm:mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 mb-8 sm:mb-10">
             {/* Pie Chart */}
             <motion.div
-              className="relative bg-white rounded-xl sm:rounded-2xl p-4 xs:p-5 sm:p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -385,7 +385,7 @@ const Dashboard = () => {
 
             {/* Bar Chart */}
             <motion.div
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -444,7 +444,7 @@ const Dashboard = () => {
 
             {/* Doughnut Chart */}
             <motion.div
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -500,7 +500,7 @@ const Dashboard = () => {
 
             {/* Line Chart */}
             <motion.div
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -559,7 +559,7 @@ const Dashboard = () => {
 
             {/* Radar Chart */}
             <motion.div
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -623,7 +623,7 @@ const Dashboard = () => {
 
             {/* PolarArea Chart */}
             <motion.div
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 group overflow-hidden"
+              className="relative bg-white rounded-xl sm:rounded-2xl p-5 xs:p-6 shadow-lg border border-gray-100 group overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}

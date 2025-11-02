@@ -66,7 +66,7 @@ const Settings = ({ initialSection }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 text-gray-900 p-8  relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 text-gray-900 p-4 sm:p-6 md:p-8 relative overflow-hidden">
        <ToastContainer
         position="top-right"
         autoClose={3000}

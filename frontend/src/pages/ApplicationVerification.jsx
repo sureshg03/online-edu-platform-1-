@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom'; // Add this import
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FunnelIcon, AcademicCapIcon, BookOpenIcon, LanguageIcon, CalendarIcon, EyeIcon, XMarkIcon, ChevronUpDownIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { 
+  FunnelIcon, AcademicCapIcon, BookOpenIcon, LanguageIcon, CalendarIcon, 
+  EyeIcon, XMarkIcon, ChevronUpDownIcon, ArrowPathIcon, 
+  TableCellsIcon, Squares2X2Icon, UserIcon, EnvelopeIcon
+} from '@heroicons/react/24/outline';
 
 const ApplicationVerification = () => {
-  const navigate = useNavigate(); // Add navigate hook
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [filteredApps, setFilteredApps] = useState([]);
+  const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
   const [filters, setFilters] = useState({
     mode_of_study: '',
     programme_applied: '',
@@ -98,8 +103,8 @@ const ApplicationVerification = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-white font-poppins relative overflow-hidden">
-  <div className="flex-1 lg:ml-64 p-4 sm:p-6 md:p-8 lg:p-10 max-w-[100vw] box-border app-container">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-poppins relative overflow-hidden">
+      <div className="w-full p-4 sm:p-6 md:p-8 lg:p-10 box-border app-container">
         {/* Particle Background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <style jsx>{`
@@ -141,24 +146,60 @@ const ApplicationVerification = () => {
           </motion.div>
         </div>
 
-        {/* Header */}
-        <motion.h1
+        {/* Header with View Toggle */}
+        <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] mb-8 tracking-tight"
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 mb-8"
         >
-          Application Verification
-        </motion.h1>
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] tracking-tight leading-tight">
+            Application Verification
+          </h1>
+          
+          {/* View Toggle Buttons */}
+          <div className="flex gap-2 xs:gap-3 w-full sm:w-auto">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setViewMode('table')}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 xs:px-5 py-3 rounded-xl font-semibold text-sm xs:text-base transition-all duration-300 shadow-lg ${
+                viewMode === 'table'
+                  ? 'bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white'
+                  : 'bg-white/80 text-[#7C3AED] hover:bg-white border-2 border-[#7C3AED]/30'
+              }`}
+            >
+              <TableCellsIcon className="h-5 w-5 xs:h-6 xs:w-6" />
+              <span className="whitespace-nowrap">Table View</span>
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setViewMode('card')}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 xs:px-5 py-3 rounded-xl font-semibold text-sm xs:text-base transition-all duration-300 shadow-lg ${
+                viewMode === 'card'
+                  ? 'bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white'
+                  : 'bg-white/80 text-[#7C3AED] hover:bg-white border-2 border-[#7C3AED]/30'
+              }`}
+            >
+              <Squares2X2Icon className="h-5 w-5 xs:h-6 xs:w-6" />
+              <span className="whitespace-nowrap">Card View</span>
+            </motion.button>
+          </div>
+        </motion.div>
 
         {/* Filter Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 mb-8 sticky top-0 z-20 border-2 border-[#7C3AED]/30 w-full max-w-full box-border"
+          className="bg-gradient-to-br from-white to-purple-50/30 backdrop-blur-xl rounded-2xl shadow-2xl p-5 xs:p-6 mb-8 sticky top-14 lg:top-0 z-20 border-2 border-[#7C3AED]/30 w-full max-w-full box-border"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="flex items-center gap-2 xs:gap-3 mb-5">
+            <FunnelIcon className="h-5 w-5 xs:h-6 xs:w-6 text-[#7C3AED] flex-shrink-0" />
+            <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-800">Filter Applications</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 xs:gap-4">
             {[
               { name: 'mode_of_study', placeholder: 'Mode of Study', icon: FunnelIcon },
               { name: 'programme_applied', placeholder: 'Programme', icon: AcademicCapIcon },
@@ -172,14 +213,14 @@ const ApplicationVerification = () => {
                 whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(124, 58, 237, 0.2)' }}
                 transition={{ duration: 0.3 }}
               >
-                <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#7C3AED]" />
+                <field.icon className="absolute left-3 xs:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 xs:h-5 xs:w-5 text-[#7C3AED] flex-shrink-0" />
                 <input
                   type="text"
                   name={field.name}
                   value={filters[field.name]}
                   onChange={handleFilterChange}
                   placeholder={field.placeholder}
-                  className="w-full pl-10 pr-4 py-3 bg-white/50 border-2 border-[#7C3AED]/40 rounded-xl text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all duration-300 hover:shadow-lg placeholder-gray-400"
+                  className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-3 xs:py-3.5 bg-white/50 border-2 border-[#7C3AED]/40 rounded-xl text-sm xs:text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all duration-300 hover:shadow-lg placeholder-gray-400 font-medium"
                 />
                 <motion.div
                   className="absolute -top-3 -right-2 hidden group-hover:block bg-[#7C3AED] text-white text-xs rounded-full px-2 py-1"
@@ -192,37 +233,47 @@ const ApplicationVerification = () => {
               </motion.div>
             ))}
           </div>
-          <div className="mt-4 flex gap-4">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(167, 139, 250, 0.4)' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={clearFilters}
-              className="flex items-center px-5 py-2 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-bold text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg"
-            >
-              <XMarkIcon className="h-5 w-5 mr-2" />
-              Clear Filters
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(167, 139, 250, 0.4)' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleRefresh}
-              className="flex items-center px-5 py-2 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-bold text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg"
-            >
-              <ArrowPathIcon className="h-5 w-5 mr-2" />
-              Refresh
-            </motion.button>
+          <div className="mt-5 xs:mt-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 xs:gap-4">
+            <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(167, 139, 250, 0.4)' }}
+                whileTap={{ scale: 0.95 }}
+                onClick={clearFilters}
+                className="flex items-center justify-center gap-2 px-4 xs:px-5 py-3 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-semibold text-sm xs:text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg"
+              >
+                <XMarkIcon className="h-5 w-5 flex-shrink-0" />
+                <span>Clear Filters</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(167, 139, 250, 0.4)' }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleRefresh}
+                className="flex items-center justify-center gap-2 px-4 xs:px-5 py-3 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-semibold text-sm xs:text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg"
+              >
+                <ArrowPathIcon className="h-5 w-5 flex-shrink-0" />
+                <span>Refresh</span>
+              </motion.button>
+            </div>
+            <div className="flex items-center justify-center sm:justify-start gap-2 xs:gap-3 bg-gradient-to-r from-[#7C3AED]/10 to-[#A78BFA]/10 px-4 xs:px-5 py-3 rounded-xl border-2 border-[#7C3AED]/20">
+              <UserIcon className="h-5 w-5 xs:h-6 xs:w-6 text-[#7C3AED] flex-shrink-0" />
+              <span className="text-sm xs:text-base font-semibold text-gray-700">
+                Total: <span className="text-[#7C3AED] text-lg xs:text-xl font-bold ml-1">{filteredApps.length}</span>
+              </span>
+            </div>
           </div>
         </motion.div>
 
-        {/* Table Card */}
+        {/* Table/Card View Container */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 border-2 border-[#7C3AED]/30 w-full max-w-full box-border"
         >
-          <div className="overflow-x-auto max-h-[calc(100vh-400px)]">
-            <table className="w-full table-auto border-collapse">
+          {/* Table View */}
+          {viewMode === 'table' && (
+            <div className="overflow-x-auto max-h-[calc(100vh-400px)] rounded-xl">
+              <table className="w-full table-auto border-collapse">
               <thead className="sticky top-0 bg-gradient-to-r from-[#6B46C1] to-[#4C2A85] text-white shadow-lg z-10">
                 <tr>
                   {[
@@ -238,12 +289,12 @@ const ApplicationVerification = () => {
                     <th
                       key={header.label}
                       onClick={() => header.key && handleSort(header.key)}
-                      className={`min-w-[120px] px-3 sm:px-4 py-3 text-left text-base font-bold tracking-wide uppercase ${header.key ? 'cursor-pointer hover:bg-[#7C3AED]/80' : ''} transition-all duration-300`}
+                      className={`min-w-[140px] px-4 sm:px-5 py-4 text-left text-sm sm:text-base font-bold tracking-wide uppercase ${header.key ? 'cursor-pointer hover:bg-[#7C3AED]/80' : ''} transition-all duration-300`}
                     >
-                      <div className="flex items-center">
-                        {header.label}
+                      <div className="flex items-center gap-2">
+                        <span className="whitespace-nowrap">{header.label}</span>
                         {header.icon && (
-                          <header.icon className={`ml-2 h-4 w-4 ${sortConfig.key === header.key ? 'text-[#A78BFA]' : 'text-white'}`} />
+                          <header.icon className={`h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 ${sortConfig.key === header.key ? 'text-[#A78BFA]' : 'text-white'}`} />
                         )}
                       </div>
                     </th>
@@ -261,24 +312,24 @@ const ApplicationVerification = () => {
                       transition={{ duration: 0.4, delay: index * 0.05 }}
                       className={`border-b-2 border-[#7C3AED]/20 transition-all duration-300 ${
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                      } hover:bg-gradient-to-r hover:from-[#A78BFA]/10 hover:to-[#7C3AED]/10 hover:shadow-lg rounded-xl`}
+                      } hover:bg-gradient-to-r hover:from-[#A78BFA]/10 hover:to-[#7C3AED]/10 hover:shadow-lg`}
                     >
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base rounded-l-xl">{app.name_initial}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.email}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.mode_of_study}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.programme_applied}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.course}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.medium}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 text-gray-800 font-medium text-base">{app.academic_year}</td>
-                      <td className="min-w-[120px] px-3 sm:px-4 py-3 rounded-r-xl">
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-800 font-semibold text-sm sm:text-base rounded-l-xl">{app.name_initial}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.email}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.mode_of_study}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.programme_applied}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.course}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.medium}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 text-gray-700 font-medium text-sm sm:text-base">{app.academic_year}</td>
+                      <td className="min-w-[140px] px-4 sm:px-5 py-4 rounded-r-xl">
                         <motion.button
                           whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(167, 139, 250, 0.4)' }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleViewMore(app.email)}
-                          className="flex items-center px-5 py-2 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-bold text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg"
+                          className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-semibold text-sm sm:text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg whitespace-nowrap"
                         >
-                          <EyeIcon className="h-5 w-5 mr-2" />
-                          View More
+                          <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                          <span>View More</span>
                         </motion.button>
                       </td>
                     </motion.tr>
@@ -287,6 +338,90 @@ const ApplicationVerification = () => {
               </tbody>
             </table>
           </div>
+          )}
+
+          {/* Card View */}
+          {viewMode === 'card' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 max-h-[calc(100vh-400px)] overflow-y-auto pr-2">
+              <AnimatePresence>
+                {filteredApps.map((app, index) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(124, 58, 237, 0.3)' }}
+                    className="bg-gradient-to-br from-white to-purple-50/50 rounded-2xl p-5 xs:p-6 border-2 border-[#7C3AED]/20 shadow-lg hover:border-[#7C3AED]/50 transition-all duration-300"
+                  >
+                    {/* Card Header */}
+                    <div className="flex items-start gap-3 mb-5">
+                      <div className="w-14 h-14 xs:w-16 xs:h-16 flex-shrink-0 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#A78BFA] flex items-center justify-center text-white font-bold text-xl xs:text-2xl shadow-lg">
+                        {app.name_initial?.charAt(0)?.toUpperCase() || 'S'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base xs:text-lg font-bold text-gray-800 truncate mb-1">{app.name_initial}</h3>
+                        <p className="text-xs xs:text-sm text-gray-500 flex items-center gap-1.5 truncate">
+                          <EnvelopeIcon className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{app.email}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card Details */}
+                    <div className="space-y-3 xs:space-y-3.5 mb-5">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs xs:text-sm text-gray-600 font-medium">Mode of Study</span>
+                          <p className="text-sm xs:text-base text-gray-800 font-semibold truncate">{app.mode_of_study}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs xs:text-sm text-gray-600 font-medium">Programme</span>
+                          <p className="text-sm xs:text-base text-gray-800 font-semibold truncate">{app.programme_applied}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-2 h-2 rounded-full bg-violet-500 mt-1.5 flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs xs:text-sm text-gray-600 font-medium">Course</span>
+                          <p className="text-sm xs:text-base text-gray-800 font-semibold truncate">{app.course}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-2 h-2 rounded-full bg-purple-400 mt-1.5 flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs xs:text-sm text-gray-600 font-medium">Medium</span>
+                          <p className="text-sm xs:text-base text-gray-800 font-semibold">{app.medium}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs xs:text-sm text-gray-600 font-medium">Academic Year</span>
+                          <p className="text-sm xs:text-base text-gray-800 font-semibold">{app.academic_year}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Action Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => handleViewMore(app.email)}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 xs:py-3.5 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-xl font-semibold text-sm xs:text-base hover:from-[#8B5CF6] hover:to-[#6D28D9] transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      <EyeIcon className="h-5 w-5 flex-shrink-0" />
+                      <span>View Full Details</span>
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
         </motion.div>
 
         <style jsx global>{`

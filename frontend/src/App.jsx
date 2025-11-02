@@ -11,6 +11,7 @@ import ApplicationVerification from './pages/ApplicationVerification';
 import StudentDetails from './pages/StudentDetails';
 import Settings from './pages/Settings';
 import AddCounsellor from './pages/AddCounsellor';
+import SuperAdminControl from './pages/SuperAdminControl';
 
 const CheckFirstAdmin = () => {
   const navigate = useNavigate();
@@ -33,9 +34,9 @@ const AppLayout = ({ children }) => {
   const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="relative min-h-screen">
       {shouldShowSidebar && <Sidebar />}
-      <div className="flex-1 content-with-sidebar">
+      <div className={`min-h-screen ${shouldShowSidebar ? 'pt-14 lg:pt-0 lg:ml-64' : ''}`}>
         {children}
       </div>
     </div>
@@ -58,6 +59,7 @@ function App() {
             <Route path="/verified-students" element={<div>Verified Students Page (Placeholder)</div>} />
             <Route path="/application-payment" element={<div>Application Payment Page (Placeholder)</div>} />
             <Route path="/semester-payment" element={<div>Semester Payment Page (Placeholder)</div>} />
+            <Route path="/super-admin" element={<SuperAdminControl />} />
             <Route path="/settings" element={<Settings initialSection="Settings" />} />
             <Route path="/settings/admission-open" element={<Settings initialSection="Admission Open" />} />
             <Route path="/settings/admission-details" element={<Settings initialSection="Admission Opened Details" />} />

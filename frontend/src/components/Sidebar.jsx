@@ -24,7 +24,6 @@ const fallbackLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQA
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isInitialRender = useRef(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,23 +44,12 @@ const Sidebar = () => {
     }
   }, [isSidebarOpen]);
 
-  const settingsSubMenu = [
-    { name: 'Admission Open', path: '/settings/admission-open', icon: <Calendar className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Admission Details', path: '/settings/admission-details', icon: <FileText className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Add LSC', path: '/settings/add-lsc', icon: <Building className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Add Course', path: '/settings/add-course', icon: <BookOpen className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Add Counsellor', path: '/settings/add-counsellor', icon: <UserPlus className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Add Attendance', path: '/settings/add-attendance', icon: <Clipboard className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Assignment Marks', path: '/settings/add-assignment-mark', icon: <BarChart2 className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Internal Marks', path: '/settings/add-internal-model-mark', icon: <BarChart2 className="w-6 h-6 stroke-[1.5]" /> },
-  ];
-
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <Home className="w-6 h-6 stroke-[1.5]" /> },
     { name: 'Verification', path: '/application-verification', icon: <CheckCircle className="w-6 h-6 stroke-[1.5]" /> },
     { name: 'Students', path: '/verified-students', icon: <Users className="w-6 h-6 stroke-[1.5]" /> },
     { name: 'Payments', path: '/application-payment', icon: <CreditCard className="w-6 h-6 stroke-[1.5]" /> },
-    { name: 'Settings', path: '/settings', icon: <Settings className="w-6 h-6 stroke-[1.5]" />, hasSubMenu: true },
+    { name: 'Super Admin', path: '/super-admin', icon: <Settings className="w-6 h-6 stroke-[1.5]" /> },
     { name: 'Logout', path: '/login', icon: <LogOut className="w-6 h-6 stroke-[1.5]" /> },
   ];
 
@@ -73,8 +61,6 @@ const Sidebar = () => {
     if (item.name === 'Logout') {
       handleLogout();
       if (window.innerWidth < 1024) setIsSidebarOpen(false);
-    } else if (item.hasSubMenu) {
-      setIsSettingsOpen(!isSettingsOpen);
     } else {
       navigate(item.path);
       if (window.innerWidth < 1024) {
@@ -82,25 +68,6 @@ const Sidebar = () => {
       }
     }
   };
-
-  const handleSubMenuClick = (subItem) => {
-    navigate(subItem.path);
-    if (window.innerWidth < 1024) {
-      setTimeout(() => setIsSidebarOpen(false), 150);
-    }
-  };
-
-  // Check if current path is settings-related
-  const isSettingsActive = () => {
-    return location.pathname.startsWith('/settings');
-  };
-
-  // Auto-open settings submenu if we're on a settings page
-  useEffect(() => {
-    if (isSettingsActive()) {
-      setIsSettingsOpen(true);
-    }
-  }, [location.pathname]);
 
   // Animation variants
   const sidebarVariants = {
@@ -143,29 +110,36 @@ const Sidebar = () => {
             background: linear-gradient(180deg, #1e1b4b 0%, #050257ff 50%, #21054cff 100%);
             color: #ffffff;
             font-family: 'Manrope', sans-serif;
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
+            position: fixed;
+            overflow: hidden;
             box-shadow: 6px 0 30px rgba(0, 0, 0, 0.3), inset -1px 0 0 rgba(255, 255, 255, 0.05);
-            scrollbar-width: thin;
-            scrollbar-color: rgba(167, 139, 250, 0.6) transparent;
             backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
           }
           
-          .sidebar::-webkit-scrollbar {
+          .sidebar-nav-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(167, 139, 250, 0.6) transparent;
+          }
+          
+          .sidebar-nav-container::-webkit-scrollbar {
             width: 6px;
           }
           
-          .sidebar::-webkit-scrollbar-track {
+          .sidebar-nav-container::-webkit-scrollbar-track {
             background: transparent;
           }
           
-          .sidebar::-webkit-scrollbar-thumb {
+          .sidebar-nav-container::-webkit-scrollbar-thumb {
             background: rgba(167, 139, 250, 0.5);
             border-radius: 3px;
           }
           
-          .sidebar::-webkit-scrollbar-thumb:hover {
+          .sidebar-nav-container::-webkit-scrollbar-thumb:hover {
             background: rgba(167, 139, 250, 0.7);
           }
 
@@ -305,7 +279,7 @@ const Sidebar = () => {
       <motion.div
         role="navigation"
         aria-label="Main navigation"
-        className={`fixed inset-y-0 left-0 z-30 w-[85vw] min-w-[280px] max-w-[320px] sm:w-80 lg:w-64 sidebar transition-transform duration-300 ease-in-out lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-[9999] lg:z-30 w-[85vw] min-w-[280px] max-w-[320px] sm:w-80 lg:w-64 sidebar transition-transform duration-300 ease-in-out lg:translate-x-0`}
         variants={sidebarVariants}
         initial="hidden"
         animate={isSidebarOpen ? 'visible' : 'hidden'}
@@ -334,9 +308,10 @@ const Sidebar = () => {
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="mt-3 xs:mt-4 sm:mt-5 lg:mt-6 px-2 xs:px-2.5 sm:px-3 pb-6 relative z-10">
-          {menuItems.map((item) => {
+        {/* Scrollable Navigation Container */}
+        <div className="sidebar-nav-container flex-1 relative z-10">
+          <nav className="mt-3 xs:mt-4 sm:mt-5 lg:mt-6 px-2 xs:px-2.5 sm:px-3 pb-6">
+            {menuItems.map((item) => {
             const isActive = item.hasSubMenu 
               ? isSettingsActive() 
               : location.pathname === item.path;
@@ -367,40 +342,11 @@ const Sidebar = () => {
                     </motion.div>
                   )}
                 </button>
-                {item.hasSubMenu && (
-                  <AnimatePresence initial={false}>
-                    {isSettingsOpen && (
-                      <motion.div
-                        variants={subMenuVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        className="submenu-container mt-0.5 xs:mt-1 ml-2.5 xs:ml-3 sm:ml-4 pl-2.5 xs:pl-3 sm:pl-4 border-l-2 border-white/20"
-                      >
-                        {settingsSubMenu.map((subItem) => (
-                          <button
-                            key={subItem.name}
-                            onClick={() => handleSubMenuClick(subItem)}
-                            className={`flex items-center w-full px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 sm:py-3 rounded-lg text-[11px] xs:text-xs sm:text-sm font-medium submenu-item ${
-                              location.pathname === subItem.path ? 'active' : 'text-gray-200'
-                            }`}
-                          >
-                            <div className="icon-container flex-shrink-0">
-                              {React.cloneElement(subItem.icon, { 
-                                className: "w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 stroke-[1.5]" 
-                              })}
-                            </div>
-                            <span className="ml-2 xs:ml-2.5 sm:ml-3 flex-1 text-left truncate leading-tight">{subItem.name}</span>
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                )}
               </div>
             );
           })}
-        </nav>
+          </nav>
+        </div>
       </motion.div>
 
       {/* Mobile Menu Button */}
@@ -408,7 +354,7 @@ const Sidebar = () => {
         {!isSidebarOpen && (
           <motion.button
             aria-label="Open navigation"
-            className="lg:hidden fixed top-3 xs:top-3.5 sm:top-4 left-3 xs:left-3.5 sm:left-4 z-40 p-2 xs:p-2.5 sm:p-3 bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-lg xs:rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95"
+            className="lg:hidden fixed top-3 xs:top-3.5 sm:top-4 left-3 xs:left-3.5 sm:left-4 z-[10000] p-2 xs:p-2.5 sm:p-3 bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-lg xs:rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95"
             onClick={() => setIsSidebarOpen(true)}
             initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -428,7 +374,7 @@ const Sidebar = () => {
       <AnimatePresence>
         {isSidebarOpen && window.innerWidth < 1024 && (
           <motion.div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -222,3 +222,91 @@ class Counsellor(models.Model):
 
     def __str__(self):
         return self.counsellor_name
+
+class LSCAdmin(models.Model):
+    """LSC Admin credentials for Learning Support Center administrators"""
+    lsc_code = models.CharField(max_length=50, unique=True)
+    center_name = models.CharField(max_length=200)
+    admin_email = models.EmailField(unique=True)
+    admin_password = models.CharField(max_length=256)  # Hashed password
+    admin_name = models.CharField(max_length=100)
+    mobile = models.CharField(max_length=15)
+    address = models.TextField()
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.EmailField()  # Super admin who created this
+
+    class Meta:
+        db_table = 'lsc_admins'
+
+    def __str__(self):
+        return f"{self.lsc_code} - {self.center_name}"
+
+class SystemSettings(models.Model):
+    """System-wide settings and configurations"""
+    SETTING_TYPES = [
+        ('admission', 'Admission Settings'),
+        ('email', 'Email Settings'),
+        ('payment', 'Payment Settings'),
+        ('general', 'General Settings'),
+        ('security', 'Security Settings'),
+        ('system', 'System Settings'),
+        ('guideline', 'Guidelines'),
+        ('maintenance', 'Maintenance Settings'),
+    ]
+    
+    setting_key = models.CharField(max_length=100, unique=True)
+    setting_value = models.TextField()
+    setting_type = models.CharField(max_length=50, choices=SETTING_TYPES)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    updated_by = models.EmailField()
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'system_settings'
+
+    def __str__(self):
+        return f"{self.setting_key} ({self.setting_type})"
+
+class DatabaseBackup(models.Model):
+    """Track database backups"""
+    backup_name = models.CharField(max_length=200)
+    backup_path = models.TextField()
+    backup_size = models.BigIntegerField()  # Size in bytes
+    backup_type = models.CharField(max_length=50, choices=[('full', 'Full'), ('partial', 'Partial')])
+    status = models.CharField(max_length=50, choices=[('completed', 'Completed'), ('failed', 'Failed'), ('in_progress', 'In Progress')])
+    created_by = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'database_backups'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.backup_name} - {self.status}"
+
+class AuditLog(models.Model):
+    """Audit log for tracking all admin actions"""
+    admin_email = models.EmailField(db_index=True)
+    action_type = models.CharField(max_length=100, db_index=True)
+    action_description = models.TextField()
+    affected_model = models.CharField(max_length=100, blank=True, null=True)
+    affected_record_id = models.IntegerField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    status = models.CharField(max_length=50, choices=[('success', 'Success'), ('failed', 'Failed')])
+    
+    class Meta:
+        db_table = 'audit_logs'
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.admin_email} - {self.action_type} - {self.timestamp}"

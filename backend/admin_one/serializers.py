@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import AdminUser, StudentInfo, Application, StudentDetails, Student, Payment, LSC, Course, Counsellor
+from .models import (
+    AdminUser, StudentInfo, Application, StudentDetails, Student, Payment, 
+    LSC, Course, Counsellor, LSCAdmin, SystemSettings, DatabaseBackup, AuditLog
+)
 import re
-from .models import Payment
-
-from .models import Course
 
 class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -155,3 +155,55 @@ class CounsellorSerializer(serializers.ModelSerializer):
             'designation': {'required': False, 'allow_null': True},
             'experience': {'required': False, 'allow_null': True},
         }
+
+class LSCAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LSCAdmin
+        fields = [
+            'id', 'lsc_code', 'center_name', 'admin_email', 'admin_password',
+            'admin_name', 'mobile', 'address', 'district', 'state', 'pincode',
+            'is_active', 'created_at', 'updated_at', 'created_by'
+        ]
+        extra_kwargs = {
+            'admin_password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        # Hash password before saving
+        validated_data['admin_password'] = make_password(validated_data['admin_password'])
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Hash password if it's being updated
+        if 'admin_password' in validated_data:
+            validated_data['admin_password'] = make_password(validated_data['admin_password'])
+        return super().update(instance, validated_data)
+
+class SystemSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SystemSettings
+        fields = [
+            'id', 'setting_key', 'setting_value', 'setting_type', 'description',
+            'is_active', 'updated_by', 'updated_at', 'created_at'
+        ]
+
+class DatabaseBackupSerializer(serializers.ModelSerializer):
+    backup_size_mb = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = DatabaseBackup
+        fields = [
+            'id', 'backup_name', 'backup_path', 'backup_size', 'backup_size_mb',
+            'backup_type', 'status', 'created_by', 'created_at', 'notes'
+        ]
+
+    def get_backup_size_mb(self, obj):
+        return round(obj.backup_size / (1024 * 1024), 2)
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuditLog
+        fields = [
+            'id', 'admin_email', 'action_type', 'action_description', 'affected_model',
+            'affected_record_id', 'ip_address', 'user_agent', 'timestamp', 'status'
+        ]
