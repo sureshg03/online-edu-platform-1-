@@ -1,0 +1,40 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('check-admin-exists/', views.check_admin_exists, name='check_admin_exists'),
+    path('create-admin/', views.create_admin, name='create_admin'),
+    path('login/', views.login_view, name='login'),
+    path('applications/', views.get_applications, name='get_applications'),
+    path('student-details/<str:email>/', views.get_student_details, name='get_student_details'),
+    path('student-info/<str:email>/', views.get_student_info, name='get_student_info'),
+    path('student-info/<str:email>/update/', views.update_student_info, name='update_student_info'),
+    path('send-otp/', views.send_otp, name='send_otp'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('reset-password/', views.reset_password, name='reset_password'),
+    path('student-details-preview/', views.get_student_details_preview, name='get_student_details_preview'),
+    path('verify-student/', views.verify_student, name='verify_student'),
+    path('proxy-image/<str:file_id>/', views.proxy_google_drive_image, name='proxy_google_drive_image'),
+    path('student-details-admin/', views.get_student_details_admin, name='get_student_details_admin'),
+    path('proxy-file/<str:file_id>/', views.proxy_google_drive_file, name='proxy_google_drive_file'),
+    path('unverify-student/', views.unverify_student, name='unverify_student'),
+    path('verify-document/', views.verify_document, name='verify_document'),  
+    path('send-email/', views.send_email, name='send_email'),
+    path('save-application-status/', views.save_application_status, name='save-application-status'),
+    path('get-student-details-admin/', views.get_student_details_admin, name='get_student_details_admin'),
+    path('lsc/create/', views.create_lsc, name='create_lsc'),
+    path('lsc/list/', views.list_lsc, name='list_lsc'),
+    path('lsc/<int:lsc_id>/update/', views.update_lsc, name='update_lsc'),
+    path('lsc/<int:lsc_id>/delete/', views.delete_lsc, name='delete_lsc'),
+    path('lsc/delete-all/', views.delete_all_lsc, name='delete_all_lsc'),
+    path('get-csrf/', views.get_csrf_token, name='get_csrf_token'),
+    path('application-settings/', views.application_settings, name='application_settings'),
+    path('system-settings/by_type/', views.system_settings_by_type, name='system_settings_by_type'),
+    path('courses/create/', views.create_course, name='create_course'),
+    path('courses/list/', views.list_courses, name='list_courses'),
+    path('courses/<int:course_id>/update/', views.update_course, name='update_course'),
+    path('courses/<int:course_id>/delete/', views.delete_course, name='delete_course'),
+    path('courses/delete_all/', views.delete_all_courses, name='delete_all_courses'),
+]
+
+
