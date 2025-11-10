@@ -4,7 +4,7 @@ Handles LSC Admin management, system settings, backups, audit logs, and database
 """
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 def log_audit(request, action_type, description, affected_model=None, affected_id=None, log_status='success'):
     """Helper function to log admin actions"""
     try:
-        admin_email = request.user.email
+        admin_email = request.user.email if request.user.is_authenticated else 'dev@example.com'
         ip_address = request.META.get('REMOTE_ADDR')
         user_agent = request.META.get('HTTP_USER_AGENT', '')
         
@@ -41,10 +41,11 @@ def log_audit(request, action_type, description, affected_model=None, affected_i
 
 # LSC Admin Management
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_lsc_admin(request):
     try:
-        serializer = LSCAdminSerializer(data=request.data)
+        data = request.data.copy()
+        data['created_by'] = 'dev@example.com'  # Default for dev
+        serializer = LSCAdminSerializer(data=data)
         if serializer.is_valid():
             lsc_admin = serializer.save()
             
@@ -68,7 +69,7 @@ def create_lsc_admin(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def list_lsc_admins(request):
     try:
         lsc_admins = LSCAdmin.objects.all().order_by('-created_at')
@@ -81,7 +82,6 @@ def list_lsc_admins(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
 def update_lsc_admin(request, admin_id):
     try:
         lsc_admin = LSCAdmin.objects.get(id=admin_id)
@@ -111,7 +111,6 @@ def update_lsc_admin(request, admin_id):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
 def delete_lsc_admin(request, admin_id):
     try:
         lsc_admin = LSCAdmin.objects.get(id=admin_id)
@@ -137,7 +136,7 @@ def delete_lsc_admin(request, admin_id):
 
 # System Settings Management
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def list_system_settings(request):
     try:
         setting_type = request.query_params.get('type', None)
@@ -154,7 +153,6 @@ def list_system_settings(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_system_setting(request):
     try:
         data = request.data.copy()
@@ -182,7 +180,6 @@ def create_system_setting(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
 def update_system_setting(request, setting_id):
     try:
         setting = SystemSettings.objects.get(id=setting_id)
@@ -215,7 +212,6 @@ def update_system_setting(request, setting_id):
 
 # Database Backup Management
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_backup(request):
     try:
         from django.core.management import call_command
@@ -357,7 +353,6 @@ def create_backup(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def list_backups(request):
     try:
         backups = DatabaseBackup.objects.all().order_by('-created_at')
@@ -370,7 +365,6 @@ def list_backups(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
 def delete_backup(request, backup_id):
     """Delete a database backup"""
     try:
@@ -411,7 +405,6 @@ def delete_backup(request, backup_id):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def download_backup(request, backup_id):
     """Download a database backup file"""
     try:
@@ -454,7 +447,6 @@ def download_backup(request, backup_id):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def restore_backup(request, backup_id):
     """Restore database from a backup file"""
     try:
@@ -577,7 +569,6 @@ def restore_backup(request, backup_id):
 
 # Audit Logs
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def list_audit_logs(request):
     try:
         action_type = request.query_params.get('action_type', None)
@@ -602,7 +593,6 @@ def list_audit_logs(request):
 
 # Dashboard Statistics
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_dashboard_stats(request):
     try:
         from .models import Application, Student, LSC, Course
@@ -625,7 +615,6 @@ def get_dashboard_stats(request):
 
 # ========================= DATABASE OPERATIONS =========================
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def execute_database_query(request):
     """Execute read-only database queries"""
     try:
@@ -654,7 +643,6 @@ def execute_database_query(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_database_tables(request):
     """Get list of all database tables"""
     try:
@@ -673,7 +661,6 @@ def get_database_tables(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_table_structure(request, table_name):
     """Get structure of a specific table"""
     try:
@@ -694,7 +681,6 @@ def get_table_structure(request, table_name):
 
 # ========================= MAINTENANCE OPERATIONS =========================
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def clear_cache(request):
     """Clear application cache"""
     try:
@@ -711,7 +697,6 @@ def clear_cache(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_system_health(request):
     """Get system health metrics"""
     try:
@@ -774,7 +759,6 @@ def get_system_health(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def optimize_database(request):
     """Optimize database tables"""
     try:
@@ -800,7 +784,6 @@ def optimize_database(request):
 
 # ========================= SECURITY OPERATIONS =========================
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_security_logs(request):
     """Get security-related audit logs"""
     try:
@@ -818,7 +801,6 @@ def get_security_logs(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def update_security_settings(request):
     """Update security-related settings"""
     try:
@@ -847,7 +829,6 @@ def update_security_settings(request):
 
 # ========================= EMAIL CONFIGURATION =========================
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_email_settings(request):
     """Get email configuration settings"""
     try:
@@ -863,7 +844,6 @@ def get_email_settings(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def update_email_settings(request):
     """Update email configuration"""
     try:
@@ -892,7 +872,6 @@ def update_email_settings(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def send_test_email(request):
     """Send a test email"""
     try:
@@ -923,7 +902,6 @@ def send_test_email(request):
 
 # ========================= GUIDELINES & INSTRUCTIONS =========================
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_guidelines(request):
     """Get system guidelines and instructions"""
     try:
@@ -939,7 +917,6 @@ def get_guidelines(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_guideline(request):
     """Create new guideline/instruction"""
     try:
@@ -961,7 +938,6 @@ def create_guideline(request):
 
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
 def delete_guideline(request, guideline_id):
     """Delete a guideline"""
     try:
