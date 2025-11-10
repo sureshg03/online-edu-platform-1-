@@ -125,7 +125,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'online_edu',
         'USER': 'root',
-        'PASSWORD': 'tiger',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
          'OPTIONS': {
